@@ -1,0 +1,34 @@
+
+一、进入容器
+1、查看容器ID：docker ps
+2、进入容器内部：docker exec -it <你的容器ID> /bin/bash
+
+二、下载 Stable Diffusion 1.5 模型
+1、创建checkpoints目录：mkdir -p /app/ComfyUI/models/checkpoints
+2、下载模型权重v1-5-pruned-emaonly.safetensors，放置在checkpoints文件夹内
+3、下载路径：https://hf-mirror.com/sd-legacy/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors
+
+三、（可选）下载 VAE 文件
+VAE 可以改善图像色彩和细节：
+1、进入VAE目录：cd /path/to/ComfyUI/models/vae
+2、下载文件vae-ft-mse-840000-ema-pruned.safetensors，放置在vae文件夹内
+3、下载路径：https://hf-mirror.com/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors?download=true
+
+四、完成与重启
+1、退出容器：exit
+2、重启容器使配置生效：docker restart <你的容器ID>
+
+五、测试
+1、在浏览器中打开：http://<服务器IP>:8188
+2、加载默认工作流：点击 Load Default 或 Workflow -> Load Default
+3、找到 Load Checkpoint 节点
+4、在ckpt_name下拉框中选择 v1-5-pruned-emaonly.safetensors
+5、正向提示词：在 CLIP Text Encode (Positive) 中输入：a beautiful landscape, mountains, lake, sunset, photorealistic, 4k, high quality
+6、负向提示词：在 CLIP Text Encode (Negative) 中输入：blurry, low quality, distorted, ugly, bad anatomy, watermark
+7、生成图像：点击 Queue Prompt 按钮
+
+学术论文：
+https://arxiv.org/pdf/2112.10752
+
+
+

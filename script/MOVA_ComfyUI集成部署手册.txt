@@ -1,0 +1,39 @@
+MOVA集成ComfyUI方法
+
+1、进入容器：
+查看容器ID：docker ps
+docker exec -it <你的容器ID> /bin/bash
+进入ComfyUI的自定义节点目录：cd ComfyUI/custom_nodes
+
+3、模型源码下载（--recursive 很重要，它会同时拉取 MOVA 官方源码）
+git clone --recursive https://github.com/richservo/comfyui-mova.git
+
+4、安装Python依赖
+cd comfyui-mova
+pip install -r requirements.txt
+
+5、重启
+完成安装后，需要重启ComfyUI，新的MOVA节点才会在节点列表中出现
+
+6、节点搜索
+重启后，在ComfyUI的节点菜单中搜索MOVA，检查是否能找到对应的加载器（Loader）、采样器（Sampler）等节点
+
+7、下载工作流
+打开runningHub，搜索”电磁波studio“，找到MOVA视频和音频生成大模型工作流下载并导入到ComfyUI中
+
+8、测试
+运行刚刚下载的工作流，检查视频生成情况。
+
+9、模型权重获取：
+安装完成后，无需手动下载模型。当第一次在ComfyUI中使用MOVA节点时，系统会根据选择的变体（360p或720p），自动从HuggingFace的OpenMOSS-Team仓库下载对应权重，并保存到ComfyUI/models/mova/目录下
+
+说明：
+1、节点MOVA Model Loader：图片生成视频
+2、节点MOVA Generate：文字生成视频
+
+
+
+
+
+
+

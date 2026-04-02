@@ -1,0 +1,88 @@
+ComfyUI容器化安装手册
+
+一、安装docker（如果安装过则跳过）
+1、先卸载老版本：
+sudo apt-get remove Docker Docker-engine Docker.io containerd runc
+2、更新软件包：
+sudo apt-get update
+sudo apt-get upgrade
+3、安装 Docker 依赖
+sudo apt-get install ca-certificates curl gnupg lsb-release
+4、添加 Docker 密钥
+curl -fsSL http://mirrors.aliyun.com/Docker-ce/Linux/ubuntu/gpg | sudo apt-key add -
+5、添加阿里云 Docker 安装源
+sudo add-apt-repository “deb [arch=amd64] HTTP://mirrors.aliyun.com/Docker-ce/Linux/ubuntu $(lsb_release -cs) stable”
+6、安装 Docker
+apt-get install Docker-ce Docker-ce-cli containerd.i
+7、更新 dockerhub
+curl -s HTTPS://static.1ms.run/1ms-helper/scripts/install.sh | sudo bash /dev/stdin config
+8、验证安装：docker --version
+
+二、安装nvidia-docker（如果安装过则跳过）
+1、检查是否安装过：docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi（如果安装过则跳过）
+2、添加仓库：
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L  HTTPS://nvidia.GitHub.io/libnvidia-container/gpgkey | sudo apt-key add -
+curl -s -L  HTTPS://nvidia.GitHub.io/libnvidia-container/$distribution/libnvidia-container.list | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+3、安装：sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+4、配置：sudo nvidia-ctk runtime configure --runtime=Docker
+5、重启：sudo systemctl restart docker
+
+三、创建工作目录和模型目录
+1、cd ~
+2、mkdir -p comfyui-docker
+3、cd comfyui-docker
+4、mkdir -p models
+5、mkdir -p custom_nodes
+6、mkdir -p output
+7、mkdir -p input
+
+四、生成 Dockerfile（使用国内 PyPI 镜像）
+1、cd ~/comfyui-docker
+2、vim Dockerfile
+3、在Dockerfile文件中写入如下内容：
+# 基础镜像：官方 PyTorch 2.1.0 + CUDA 12.1 + cuDNN 8
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+# 设置环境变量（避免交互式提示）
+ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+# 安装系统依赖（包括ffmpeg但控制镜像大小）
+RUN apt-get update && apt-get install -y git ffmpeg libgl1-mesa-glx libglib2.0-0 && rm -rf /var/lib/apt/lists/*
+# 克隆ComfyUI（使用特定版本而非最新版，避免意外变更）
+RUN git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /app/ComfyUI
+WORKDIR /app/ComfyUI
+# 配置pip使用清华源
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# 安装Python依赖
+RUN pip install --no-cache-dir -r requirements.txt
+# 安装xformers（优化Transformer性能）
+RUN pip install --no-cache-dir xformers
+# 创建必要的目录并设置权限
+RUN mkdir -p custom_nodes input output models workflow && chmod -R 755 /app/ComfyUI
+# 暴露端口
+EXPOSE 8188
+# 验证安装（创建验证脚本）
+RUN python -c "
+import torch
+import sys
+print('='*50)
+print('ComfyUI Docker环境验证')
+print('='*50)
+print(f'PyTorch版本: {torch.__version__}')
+print(f'CUDA可用: {torch.cuda.is_available()}')
+if torch.cuda.is_available():
+    print(f'CUDA版本: {torch.version.cuda}')
+    print(f'GPU设备: {torch.cuda.get_device_name(0)}')
+    print(f'GPU数量: {torch.cuda.device_count()}')
+print('='*50)"
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 CMD python -c "import socket; s=socket.socket(); s.connect(('localhost',8188))" || exit 1
+# 启动命令
+CMD ["python", "main.py", "--listen", "0.0.0.0", "--port", "8188"]
+
+五、构建 Docker 镜像
+docker build -t comfyui .
+
+六、启动容器
+docker run -d --name comfyui --gpus all -p 8188:8188 -v ~/comfyui-docker/models:/app/ComfyUI/models -v ~/comfyui-docker/custom_nodes:/app/ComfyUI/custom_nodes -v ~/comfyui-docker/input:/app/ComfyUI/input -v ~/comfyui-docker/output:/app/ComfyUI/output comfyui
+
+参考：https://www.cnblogs.com/yisheng163/p/19106694
