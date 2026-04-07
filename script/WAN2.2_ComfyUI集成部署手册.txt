@@ -1,30 +1,28 @@
-ComfyUI集成部署WAN_2.2
+ComfyUI集成部署WAN_2.2（验证无误）
 
-一、进入 ComfyUI 容器
-1、查看容器ID：docker ps
-2、进入容器内部：docker exec -it <你的容器ID> /bin/bash
+一、安装comfyUI
+先完成comfyUI的安装，操作步骤见《ComfyUI_安装部署手册》
 
-三、创建模型存放目录并进入 ComfyUI 根目录
-1、cd /app/ComfyUI
-2、mkdir -p models/diffusion_models models/text_encoders models/vae （路径不能修改，WanVideoWrapper会到这些路径下找）
+二、下载核心模型文件（TI2V-5B 专用）
+1、下载 wan2.2_ti2v_5B_fp16.safetensors放入~/comfyui/storage-models/models/diffusion_models/目录下
+下载地址（需翻墙）：https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors
 
-四、下载核心模型文件（TI2V-5B 专用）
-1、下载 wan2.2_ti2v_5B_fp16.safetensors 放入models/diffusion_models
-2、下载 umt5_xxl_fp8_e4m3fn_scaled.safetensors 放入models/text_encoders workflow
-4、下载 wan2.2_vae.safetensors 放入models/vae下
-5、下载工作流 wan2.2_i2v_workflow.json、wan2.2_t2v_workflow.json放在workflow目录下
-6、下载参考：https://www.gongjiyun.com/blog/2025/2025/v4wuwmhnmitlxmkstxwcwzbbnuh/#1%e5%b7%a5%e5%85%b7%e5%87%86%e5%a4%87
+2、下载 umt5_xxl_fp8_e4m3fn_scaled.safetensors放入~/comfyui/storage-models/models/text_encoders/目录下
+下载地址（需翻墙）：https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors
 
-五、 安装 ComfyUI 自定义节点（WanVideoWrapper）
-1、进入容器ComfyUI根目录：cd /app/ComfyUI
-2、进入自定义节点目录：cd custom_nodes
-3、克隆插件仓库：git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git
-4、进入插件目录并安装依赖：
-   cd ComfyUI-WanVideoWrapper
-   pip install -r requirements.txt
+3、下载 wan2.2_vae.safetensors 放入~/comfyui/storage-models/models/vae/目录下
+下载地址（需翻墙）：https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan2.2_vae.safetensors
 
-六、完成与重启
-1、退出容器：exit
-2、重启容器使配置生效：docker restart <你的容器ID>
-3、在浏览器打开 http://localhost:8188
-4、加载工作流并运行
+4、将工作流文件wan2.2_i2v_workflow.json和wan2.2_t2v_workflow.json放在~/comfyui/storage-user/workflows/目录下
+
+5、将fennec_girl_hug.png 放入 ComfyUI 安装目录下的 ~/comfyui/storage-user/input/目录下
+
+
+三、完成与重启
+1、重启容器使配置生效：docker restart <你的容器ID>
+2、在浏览器打开 http://localhost:8188
+3、加载工作流并运行
+
+参考文档：https://www.gongjiyun.com/blog/2025/2025/v4wuwmhnmitlxmkstxwcwzbbnuh/#1%e5%b7%a5%e5%85%b7%e5%87%86%e5%a4%87
+
+
