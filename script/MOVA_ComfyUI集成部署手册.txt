@@ -1,4 +1,4 @@
-MOVA集成ComfyUI方法
+ComfyUI集成部署MOVA
 
 1、进入容器：
 查看容器ID：docker ps
