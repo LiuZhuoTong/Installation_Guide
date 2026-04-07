@@ -1,23 +1,19 @@
-ComfyUI集成部署SD_1.5
+ComfyUI集成部署SD_1.5（验证无误）
 
-一、进入容器
-1、查看容器ID：docker ps
-2、进入容器内部：docker exec -it <你的容器ID> /bin/bash
+一、安装comfyUI
+先完成comfyUI的安装，操作步骤见《ComfyUI_安装部署手册》
 
-二、下载 Stable Diffusion 1.5 模型
-1、创建checkpoints目录：mkdir -p /app/ComfyUI/models/checkpoints
-2、下载模型权重v1-5-pruned-emaonly.safetensors，放置在checkpoints文件夹内
-3、下载路径：https://hf-mirror.com/sd-legacy/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors
+二、下载 Stable Diffusion 1.5 模型权重
+1、cd ~/comfyui/storage-models/models/checkpoints
+2、wget -c https://hf-mirror.com/sd-legacy/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors
 
 三、（可选）下载 VAE 文件
 VAE 可以改善图像色彩和细节：
-1、进入VAE目录：cd /path/to/ComfyUI/models/vae
-2、下载文件vae-ft-mse-840000-ema-pruned.safetensors，放置在vae文件夹内
-3、下载路径：https://hf-mirror.com/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors?download=true
+1、cd ~/comfyui/storage-models/models/vae
+2、wget -c https://hf-mirror.com/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors?download=true
 
 四、完成与重启
-1、退出容器：exit
-2、重启容器使配置生效：docker restart <你的容器ID>
+1、重启容器使配置生效：docker restart <你的容器ID>
 
 五、测试
 1、在浏览器中打开：http://<服务器IP>:8188
@@ -28,8 +24,6 @@ VAE 可以改善图像色彩和细节：
 6、负向提示词：在 CLIP Text Encode (Negative) 中输入：blurry, low quality, distorted, ugly, bad anatomy, watermark
 7、生成图像：点击 Queue Prompt 按钮
 
-学术论文：
-https://arxiv.org/pdf/2112.10752
 
 
 
