@@ -1,7 +1,7 @@
 ComfyUI容器化安装手册（验证无误）
 
 一、安装docker、nvidia-runtime
-租用捷），选择自带 docker 和 nvidia-runtime 的系统镜像，可以更加方便快捷
+租用捷智云主机（https://www.gogpu.cn），选择自带 docker 和 nvidia-runtime 的系统镜像，可以更加方便快捷
 1、docker 安装验证：docker --version
 2、nvidia-runtime 安装验证：ls -l /usr/bin/nvidia-container-runtime*
 （会在/usr/bin/下找到相关文件）
