@@ -1,0 +1,29 @@
+ComfyUI集成部署LTX-2（验证无误）
+
+#安装comfyUI
+先完成comfyUI的安装，操作步骤见《ComfyUI_安装部署手册》
+
+# 设置镜像
+export HF_ENDPOINT=https://hf-mirror.com
+
+# 下载核心模型（~43.3GB）
+huggingface-cli download Lightricks/LTX-2 ltx-2-19b-distilled.safetensors --local-dir ~/comfyui/storage-models/models/checkpoints
+
+# 空间放大模型
+cd ~/comfyui/storage-models/models/latent_upscale_models
+wget  https://hf-mirror.com/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors
+
+# 文本编码器 (~8.8GB)
+huggingface-cli download Comfy-Org/ltx-2 split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors --local-dir ~/comfyui/storage-models/models/text_encoders
+mv /root/comfyui/storage-models/models/text_encoders/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors /root/comfyui/storage-models/models/text_encoders/
+cd /root/comfyui/storage-models/models/text_encoders/
+rm -rf split_fil
+
+# 镜头控制 LoRA
+cd ~/comfyui/storage-models/models/loras
+wget -c https://hf-mirror.com/Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-Left/resolve/main/ltx-2-19b-lora-camera-control-dolly-left.safetensors
+
+
+
+
+
