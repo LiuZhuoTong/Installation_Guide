@@ -32,7 +32,8 @@ mkdir -p \
   storage-user/workflows
 
 七、启动容器
-docker run -d -it --rm \
+1、cd ~/comfyui
+2、docker run -d -it --rm \
   --name comfyui \
   --gpus all \
   -p 8188:8188 \

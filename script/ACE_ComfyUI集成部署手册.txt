@@ -1,0 +1,29 @@
+ACE_ComfyUI集成部署手册
+
+# 安装ComfyUI
+如果安装过请忽略
+
+# 加载工作流
+上传并加载工作流：ace_i2s_workflow.json
+工作流加载后会提示下载工作流节点和模型参数文件，按要求下载并放到指定目录下即可。
+
+# 下载acestep_v1.5_turbo.safetensors（DIFFUSION）
+按提示直接下载，上传到服务器即可
+备用方案：
+1、cd ~/comfyui/storage-models/models/diffusion_models
+2、wget https://hf-mirror.com/ACE-Step/Ace-Step1.5/resolve/main/acestep-v15-turbo/model.safetensors?download=true
+3、mv model.safetensors\?download\=true acestep_v1.5_turbo.safetensors
+
+# 下载qwen_0.6b_ace15.safetensors（TEXT_ENCODER）
+按提示直接下载，上传到服务器即可
+
+# 下载qwen_1.7b_ace15.safetensors（TEXT_ENCODER）
+按提示直接下载，上传到服务器即可
+
+# 下载ace_1.5_vae.safetensors（VAE）
+按提示直接下载，上传到服务器即可
+
+# 执行工作流输入提示词可以执行文字生成音乐任务
+
+
+

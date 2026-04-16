@@ -1,0 +1,10 @@
+
+
+# qwen-tss语言模型下载
+modelscope download --model 'Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice' --local_dir '/root/comfyui/storage-models/models/qwen-tts/Qwen3-TTS-12Hz-1.7B-CustomVoice'
+
+# 加载工作流
+上传并加载工作流：Qwen3-TTS+语音生成.json，输入文字生成语音
+
+# 调整模型参数
+custom_model_path 内容写： /root/ComfyUI/models/qwen-tts/Qwen3-TTS-12Hz-1.7B-CustomVoice

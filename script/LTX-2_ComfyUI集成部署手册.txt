@@ -6,14 +6,14 @@ ComfyUI集成部署LTX-2（验证无误）
 # 设置镜像
 export HF_ENDPOINT=https://hf-mirror.com
 
-# 下载核心模型（~43.3GB）
+# 核心模型
 huggingface-cli download Lightricks/LTX-2 ltx-2-19b-distilled.safetensors --local-dir ~/comfyui/storage-models/models/checkpoints
 
 # 空间放大模型
 cd ~/comfyui/storage-models/models/latent_upscale_models
 wget  https://hf-mirror.com/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors
 
-# 文本编码器 (~8.8GB)
+# 文本编码器
 huggingface-cli download Comfy-Org/ltx-2 split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors --local-dir ~/comfyui/storage-models/models/text_encoders
 mv /root/comfyui/storage-models/models/text_encoders/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors /root/comfyui/storage-models/models/text_encoders/
 cd /root/comfyui/storage-models/models/text_encoders/
@@ -23,7 +23,7 @@ rm -rf split_fil
 cd ~/comfyui/storage-models/models/loras
 wget -c https://hf-mirror.com/Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-Left/resolve/main/ltx-2-19b-lora-camera-control-dolly-left.safetensors
 
-
-
-
-
+# 加载工作流
+1、上传并加载ltx2_t2v_workflow.json工作流，可以进行文字生视频
+2、上传并加载ltx2_i2v_workflow.json工作流，可以进行图片生视频。样例图片为image/snow_bike.png
+3、上传工作流后如果需要下载工作流节点，按要求下载即可

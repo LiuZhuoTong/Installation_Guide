@@ -17,12 +17,7 @@ VAE 可以改善图像色彩和细节：
 
 五、测试
 1、在浏览器中打开：http://<服务器IP>:8188
-2、加载默认工作流：点击 Load Default 或 Workflow -> Load Default
-3、找到 Load Checkpoint 节点
-4、在ckpt_name下拉框中选择 v1-5-pruned-emaonly.safetensors
-5、正向提示词：在 CLIP Text Encode (Positive) 中输入：a beautiful landscape, mountains, lake, sunset, photorealistic, 4k, high quality
-6、负向提示词：在 CLIP Text Encode (Negative) 中输入：blurry, low quality, distorted, ugly, bad anatomy, watermark
-7、生成图像：点击 Queue Prompt 按钮
+2、上传并加载工作流ds1.5_t2i_workflow.json，可以进行文字生成图片
 
 
 
