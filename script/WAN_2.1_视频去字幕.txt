@@ -1,0 +1,39 @@
+
+# 上传并加载 WAN2.1_视频去字幕.json 工作流
+
+# 按照提示下载工作流节点
+1、让deepseek协助找到这些节点的git地址
+2、在git页面直接下载，然后放在/root/comfyui/storage/ComfyUI/custom_nodes目录下
+
+text_encoders（10g）
+wget -P ~/comfyui/storage-models/models/text_encoders/ https://hf-mirror.com/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp16.safetensors
+
+VAE（240M）
+wget https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1_VAE_bf16.safetensors
+
+diffusion_model(2.1g)
+https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Wan2_1-MiniMaxRemover_1_3B_fp16.safetensors
+
+loras(700M)
+https://huggingface.co/lightx2v/Wan2.1-I2V-14B-480P-StepDistill-CfgDistill-Lightx2v/blob/main/loras/Wan21_I2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors
+
+# 安装
+pip install sageattention
+
+# 下载
+cd ~/comfyui/storage-model/model
+mkdir grounding-dino/ （如果没有就创建）
+wget https://hf-mirror.com/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swint_ogc.pth
+wget https://hf-mirror.com/ShilongLiu/GroundingDINO/resolve/main/GroundingDINO_SwinT_OGC.cfg.py
+
+# 下载
+cd ~/comfyui/storage-model/model
+export HF_ENDPOINT=https://hf-mirror.com
+hf download bert-base-uncased --local-dir ./bert-base-uncased
+
+# 下载
+翻墙访问 https://hf-mirror.com/hustvl/vitmatte-base-composition-1k/tree/main
+下载config.json、pytorch_model.bin、preprocessor_config.json
+上传到 ~/comfyui/storage-model/model/vitmatte/（如果没有请新建）
+
+# 上传样例视频 video_subtitle_removal.mp4，后执行运行

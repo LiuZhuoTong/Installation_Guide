@@ -1,6 +1,0 @@
-
-# 加载视频去字幕
-
-# 下载 realisticVisionV51_v51VAE.safetensors（2G）
-
-#下载 pcm_sd15_smallcfg_2step_converted.safetensors（128M）
