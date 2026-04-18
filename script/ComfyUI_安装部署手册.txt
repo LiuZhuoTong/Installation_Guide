@@ -31,10 +31,6 @@ mkdir -p \
   storage-user/output \
   storage-user/workflows
 
-(base) root@app-4db71c8f1140944a:~# find /root -name "huggingface_hub" -type d 2>/dev/null
-vim ~/comfyui/storage/.cache/pycache/usr/local/lib/python3.12/site-packages/huggingface_hub
-
-
 七、启动容器
 1、cd ~/comfyui
 2、docker run -d -it --rm \

@@ -1,13 +1,62 @@
 
 
- pip install codewithgpu
- cg down nahz202/PuLID-Flux/weights.zip
- cg down nahz202/PuLID-Flux/antelopev2.zip
- cg down nahz202/PuLID-Flux/EVA02_CLIP_L_336_psz14_s6B.pt
- cg down nahz202/PuLID-Flux/pulid_flux_v0.9.0.safetensors
- cg down nahz202/PuLID-Flux/QuanSun.zip
-
- 下载自定义节点
+# 下载自定义节点
 cd ~/comfyui/storage/ComfyUI/custom_nodes
 git clone https://github.com/Slickytail/ComfyUI-PuLID-Flux-Enhanced-Fix-For
 pip install -r requirements.txt
+
+# pip install codewithgpu
+
+# 下载基础 FLUX.1 模型
+1、cd  ~/comfyui/storage-models/models/unet
+2、wget -c https://hf-mirror.com/Kijai/flux-fp8/resolve/main/flux1-dev-fp8.safetensors -O ./flux1-dev-fp8.safetensors
+3、cd  ~/comfyui/storage-models/models/text_encoders/
+4、wget https://hf-mirror.com/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors
+5、wget -c -O t5xxl_fp8_e4m3fn.safetensors "https://hf-mirror.com/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors?download=true"
+6、翻墙手动下载：https://hf-mirror.com/Comfy-Org/Lumina_Image_2.0_Repackaged/blob/main/split_files/vae/ae.safetensors
+7、上传到： ~/comfyui/storage-models/models/vae/
+
+
+# 下载 PuLID Flux 核心模型，放在model/pulid目录下
+cd ~/comfyui/storage-models/models
+mkdir pulid && cd pulid
+cg down nahz202/PuLID-Flux/pulid_flux_v0.9.0.safetensors
+mv PuLID-Flux/pulid_flux_v0.9.0.safetensors ~/comfyui/storage-models/models/pulid
+rm -rf PuLID-Flux/
+
+# 下载 InsightFace 人脸分析模型
+cd ~/comfyui/storage-models/models/
+mkdri insightface && cd insightface && mkdir models
+cd ~/comfyui/storage-models/models/insightface/models/
+cg down nahz202/PuLID-Flux/antelopev2.zip
+mv PuLID-Flux/antelopev2.zip ~/comfyui/storage-models/models/insightface/models
+rm -rf PuLID-Flux/
+unzip antelopev2.zip -d antelopev2
+cd ~/comfyui/storage-models/models/insightface/models/antelopev2/antelopev2
+mv ./* ~/comfyui/storage-models/models/insightface/models/antelopev2
+cd .. && rm -rf antelopev2
+
+# 下载人脸识别辅助模型
+cd ~/comfyui/storage-models/models/clip
+cg down nahz202/PuLID-Flux/EVA02_CLIP_L_336_psz14_s6B.pt
+mv PuLID-Flux/EVA02_CLIP_L_336_psz14_s6B.pt ./
+rm -rf PuLID-Flux/
+
+# 下载QuanSun
+cd ~
+cg down nahz202/PuLID-Flux/QuanSun.zip
+cd PuLID-Flux
+unzip QuanSun.zip -d QuanSun
+docker cp ~/PuLID-Flux/QuanSun/* comfyui:/root/.cache/huggingface/hub/ （这里只要QuanSun下的内容，QuanSun不要）
+cd ~ && rm -rf PuLID-Flux
+
+# 下载weights
+cd ~
+cg down nahz202/PuLID-Flux/weights.zip
+cd PuLID-Flux
+unzip weights.zip -d weights
+docker cp ~/PuLID-Flux/weights/* comfyui:/usr/local/lib/python3.12/site-packages/facexlib/ （路径通过 pip show facexlib | grep Location 命令确定）
+cd ~ && rm -rf PuLID-Flux
+
+# 上传image/女明星.png，提示词中写Head close-up.A woman stands in front of the hotel with a mobile phone in her hand.运行工作流
+
