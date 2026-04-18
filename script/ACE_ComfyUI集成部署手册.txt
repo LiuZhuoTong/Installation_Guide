@@ -4,7 +4,7 @@ ACE_ComfyUI集成部署手册
 如果安装过请忽略
 
 # 加载工作流
-上传并加载工作流：ace_i2s_workflow.json
+上传并加载工作流：ace_t2s_workflow.json
 工作流加载后会提示下载工作流节点和模型参数文件，按要求下载并放到指定目录下即可。
 
 # 下载acestep_v1.5_turbo.safetensors（DIFFUSION）

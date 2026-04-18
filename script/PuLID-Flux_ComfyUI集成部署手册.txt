@@ -1,0 +1,13 @@
+
+
+ pip install codewithgpu
+ cg down nahz202/PuLID-Flux/weights.zip
+ cg down nahz202/PuLID-Flux/antelopev2.zip
+ cg down nahz202/PuLID-Flux/EVA02_CLIP_L_336_psz14_s6B.pt
+ cg down nahz202/PuLID-Flux/pulid_flux_v0.9.0.safetensors
+ cg down nahz202/PuLID-Flux/QuanSun.zip
+
+ 下载自定义节点
+cd ~/comfyui/storage/ComfyUI/custom_nodes
+git clone https://github.com/Slickytail/ComfyUI-PuLID-Flux-Enhanced-Fix-For
+pip install -r requirements.txt
