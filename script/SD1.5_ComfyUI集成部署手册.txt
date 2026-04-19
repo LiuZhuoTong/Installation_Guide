@@ -7,7 +7,7 @@ ComfyUI集成部署SD_1.5（验证无误）
 1、cd ~/comfyui/storage-models/models/checkpoints
 2、wget -c https://hf-mirror.com/sd-legacy/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors
 
-三、（可选）下载 VAE 文件
+三、下载 VAE 文件
 VAE 可以改善图像色彩和细节：
 1、cd ~/comfyui/storage-models/models/vae
 2、wget -c https://hf-mirror.com/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors?download=true

@@ -4,8 +4,7 @@
 cd ~/comfyui/storage/ComfyUI/custom_nodes
 git clone https://github.com/Slickytail/ComfyUI-PuLID-Flux-Enhanced-Fix-For
 pip install -r requirements.txt
-
-# pip install codewithgpu
+pip install codewithgpu
 
 # 下载基础 FLUX.1 模型
 1、cd  ~/comfyui/storage-models/models/unet

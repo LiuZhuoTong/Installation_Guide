@@ -1,0 +1,107 @@
+
+# 下载Qwen3-8B模型权重
+1、pip install modelscope
+2、python
+2、from modelscope import snapshot_download
+3、model_dir = snapshot_download('qwen/Qwen3-8B',cache_dir='/root/')  （默认存储位置为~/.cache/modelscope/hub/）
+4、print(model_dir)   （输出路径，例如/root/qwen/Qwen3-8B）  /data/models/Qwen3-8B
+5、exit()
+
+# 获取vLLM官方镜像
+docker pull vllm/vllm-openai:v0.8.5.post1
+
+#启动服务：一行命令启动高性能推理引擎
+docker run --gpus all \
+  -p 8000:8000 \
+  --ipc=host \
+  -v /root/qwen/Qwen3-8B:/app/qwen3-8b \
+  --name qwen3-vllm \
+  -d --rm \
+  vllm/vllm-openai:v0.8.5.post1 \
+  --model /app/qwen3-8b \
+  --dtype half \
+  --max-model-len 32768 \
+  --tensor-parallel-size 1 \
+  --gpu-memory-utilization 0.95 \
+  --enable-prefix-caching \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --max-num-seqs 256 \
+  --max-num-batched-tokens 8192
+
+# 让我们拆解几个关键参数的实际意义：
+--dtype half：使用float16精度，显存占用减半，性能损失极小；
+--max-model-len 32768：启用完整的32K上下文窗口，处理万字文档也不怕；
+--gpu-memory-utilization 0.95：尽可能压榨显存利用率，提升并发能力；
+--enable-prefix-caching：对于重复提问或固定系统提示词，缓存公共前缀，显著加快响应速度；
+--max-num-batched-tokens 8192：控制单批次最大token数，平衡延迟与吞吐。
+
+# 成功后会看到
+INFO [api_server.py] Starting vLLM API server on http://0.0.0.0:8000
+INFO [launcher.py] Available routes: /v1/chat/completions, /v1/completions, /v1/models...
+此时服务已在 http://localhost:8000 可用。
+
+# 可用性测试
+1、输入示例
+curl http://127.0.0.1:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "/app/qwen3-8b",
+    "messages": [
+      {"role": "system", "content": "你是一个乐于助人的AI助手"},
+      {"role": "user", "content": "请介绍广州有哪些特色美食？"}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 512
+  }'
+（执行过命令 curl http://127.0.0.1:8000/v1/models 可以得到模型名称为 /app/qwen3-8b）
+2、返回示例
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "created": 1746523456,
+  "model": "Qwen3-8B",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "广州是中国著名的美食之都，被誉为“食在广州”……"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 23,
+    "completion_tokens": 412,
+    "total_tokens": 435
+  }
+}
+
+注意：
+API 本身不保存任何状态，所以如果你希望模型记住之前的对话内容，就需要在每次请求时，主动把整个对话历史（包括用户问题和模型之前的回答）都放进 messages 数组里
+第一次请求：
+curl http://127.0.0.1:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "/app/qwen3-8b",
+    "messages": [
+      {"role": "user", "content": "广州有哪些特色美食？"}
+    ]
+}'
+第二次请求：
+curl http://127.0.0.1:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "/app/qwen3-8b",
+    "messages": [
+      {"role": "user", "content": "广州有哪些特色美食？"},
+      {"role": "assistant", "content": "广州有肠粉、叉烧包、虾饺、烧卖、云吞面等。"},
+      {"role": "user", "content": "那其中哪一道最推荐？"}
+    ]
+  }'
+
+
+
+
+参考文档：https://blog.csdn.net/weixin_34598113/article/details/155974258
