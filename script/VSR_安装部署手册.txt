@@ -1,0 +1,23 @@
+# 拉取镜像
+cd ~ && mkdir video-subtitle-remover
+cd ~/video-subtitle-remover && mkdir data
+cd data && mkdir input && mkdir output
+docker pull m5dcw6cxn4ifp7yjft.xuanyuan.run/eritpchy/video-subtitle-remover:1.4.0-cuda11.8 （m5dcw6cxn4ifp7yjft为私有前缀）
+
+# 执行任务（可选择propainter或者lama）
+docker rm -f vsr
+docker run -it --name vsr --gpus all \
+  -v ~/video-subtitle-remover/data:/data \
+  m5dcw6cxn4ifp7yjft.xuanyuan.run/eritpchy/video-subtitle-remover:1.4.0-cuda11.8 \
+  python backend/main.py -i /data/input/video_subtitle_removal.mp4 -o /data/output/video_subtitle_removal_no_sub.mp4 --inpaint-mode lama
+
+参数详解
+--input/-i: 指定输入视频的路径，必须为容器内可访问的路径（建议通过挂载卷方式提供本地文件）
+--output/-o: 指定输出视频的路径，若未指定则默认生成在输入文件同目录下
+--subtitle-area-coords/-c: 手动指定字幕区域坐标，格式为"ymin ymax xmin xmax"（视频像素坐标），可多次使用该参数处理多个不重叠区域
+--inpaint-mode: 选择填充算法，各模式特点：
+sttn-auto: 自动检测字幕区域，真人视频效果好，速度快
+sttn-det: 使用指定区域检测，需配合-c参数
+lama: 图片效果最佳，动画视频适用，速度中等
+propainter: 运动剧烈视频效果好，显存占用高，速度慢
+opencv: 基础填充算法，速度最快但效果一般
