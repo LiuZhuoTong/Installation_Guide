@@ -36,6 +36,24 @@ docker run --gpus all \
 --enable-prefix-caching：对于重复提问或固定系统提示词，缓存公共前缀，显著加快响应速度；
 --max-num-batched-tokens 8192：控制单批次最大token数，平衡延迟与吞吐。
 
+# 降低显存使用
+docker run --gpus all \
+  -p 8000:8000 \
+  --ipc=host \
+  -v /root/qwen/Qwen3-8B:/app/qwen3-8b \
+  --name qwen3-vllm \
+  -d --rm \
+  vllm/vllm-openai:v0.8.5.post1 \
+  --model /app/qwen3-8b \
+  --dtype half \
+  --max-model-len 8192 \
+  --tensor-parallel-size 1 \
+  --gpu-memory-utilization 0.5 \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --max-num-seqs 8 \
+  --max-num-batched-tokens 4096
+
 # 成功后会看到
 INFO [api_server.py] Starting vLLM API server on http://0.0.0.0:8000
 INFO [launcher.py] Available routes: /v1/chat/completions, /v1/completions, /v1/models...
